@@ -1,0 +1,74 @@
+{
+  "name": "ubuntu-system-monitor",
+  "version": "1.0.0",
+  "description": "Real-time Ubuntu dashboard for CPU, memory, disk usage and running applications",
+  "keywords": [
+    "ubuntu",
+    "linux",
+    "system-monitor",
+    "electron",
+    "dashboard",
+    "cpu",
+    "memory",
+    "disk-usage"
+  ],
+  "author": {
+    "name": "sajith4u",
+    "email": "sajith4u@users.noreply.github.com"
+  },
+  "homepage": "https://github.com/sajith4u/SysPulse",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sajith4u/SysPulse.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sajith4u/SysPulse/issues"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "src/main.js",
+  "desktopName": "ubuntu-system-monitor.desktop",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --linux",
+    "dist:appimage": "electron-builder --linux AppImage",
+    "dist:deb": "electron-builder --linux deb"
+  },
+  "build": {
+    "appId": "io.github.sajith4u.ubuntu-system-monitor",
+    "productName": "Ubuntu System Monitor",
+    "executableName": "ubuntu-system-monitor",
+    "artifactName": "${name}-${version}-${arch}.${ext}",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/icon.png",
+      "package.json"
+    ],
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "syncDesktopName": true,
+      "icon": "assets/icon.png",
+      "category": "System",
+      "synopsis": "Real-time CPU, memory, disk and process dashboard",
+      "desktop": {
+        "entry": {
+          "Name": "Ubuntu System Monitor",
+          "Keywords": "system;monitor;cpu;memory;disk;process;task;"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "chart.js": "^4.4.0",
+    "systeminformation": "^5.23.0"
+  },
+  "devDependencies": {
+    "electron": "^39.8.10",
+    "electron-builder": "^26.18.0"
+  }
+}

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Monitor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <h1>System Monitor</h1>
+      <span id="hostInfo">Loading…</span>
+    </div>
+    <div class="topbar-right">
+      <span id="lastUpdated">--</span>
+      <span class="status"><span class="dot"></span>Live</span>
+    </div>
+  </header>
+
+  <main class="grid">
+
+    <!-- Row 1: headline widgets -->
+    <section class="card">
+      <h2>CPU Usage</h2>
+      <div class="gauge">
+        <canvas id="cpuGauge"></canvas>
+        <div class="gauge-value"><strong id="cpuUsage">0%</strong><span id="cpuStatus" class="badge">--</span></div>
+      </div>
+      <dl class="facts">
+        <div><dt>Cores</dt><dd id="cpuCores">--</dd></div>
+        <div><dt>Load avg</dt><dd id="loadAvg">--</dd></div>
+      </dl>
+      <p class="muted small" id="cpuModel"></p>
+    </section>
+
+    <section class="card">
+      <h2>Memory Usage</h2>
+      <div class="gauge">
+        <canvas id="memGauge"></canvas>
+        <div class="gauge-value"><strong id="memoryUsage">0%</strong><span id="memStatus" class="badge">--</span></div>
+      </div>
+      <dl class="facts">
+        <div><dt>Used</dt><dd id="memoryDetails">--</dd></div>
+        <div><dt>Swap</dt><dd id="swapDetails">--</dd></div>
+      </dl>
+    </section>
+
+    <section class="card">
+      <h2>Memory Composition</h2>
+      <div class="donut">
+        <canvas id="memDonut"></canvas>
+      </div>
+      <ul class="legend" id="memLegend"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Processes</h2>
+      <div class="big-numbers">
+        <div><strong id="procAll">--</strong><span>Total</span></div>
+        <div><strong id="procRunning">--</strong><span>Running</span></div>
+        <div><strong id="procSleeping">--</strong><span>Sleeping</span></div>
+        <div><strong id="procBlocked">--</strong><span>Blocked</span></div>
+      </div>
+      <p class="muted small" id="appCount"></p>
+    </section>
+
+    <!-- Row 2: history + per-core -->
+    <section class="card span-3">
+      <h2>Performance History <span class="muted small">(last 60 s)</span></h2>
+      <div class="chart-box"><canvas id="performanceChart"></canvas></div>
+    </section>
+
+    <section class="card">
+      <h2>CPU Load per Core</h2>
+      <div class="cores" id="coreTiles"></div>
+    </section>
+
+    <!-- Row 3: top lists -->
+    <section class="card">
+      <h2>Top Apps by CPU</h2>
+      <ul class="bar-list" id="topCpu"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Top Apps by Memory</h2>
+      <ul class="bar-list" id="topMem"></ul>
+    </section>
+
+    <section class="card span-2">
+      <h2>Disk Usage</h2>
+      <ul class="bar-list" id="diskList"></ul>
+    </section>
+
+    <!-- Row 4: full table -->
+    <section class="card span-4">
+      <div class="section-head">
+        <h2>Running Applications</h2>
+        <div class="controls">
+          <input id="appFilter" type="search" placeholder="Filter apps…" aria-label="Filter apps">
+          <label>
+            Sort by
+            <select id="sortBy">
+              <option value="cpu">CPU</option>
+              <option value="memBytes">Memory</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <table class="apps">
+        <thead>
+          <tr>
+            <th>Application</th>
+            <th>Processes</th>
+            <th>CPU %</th>
+            <th>Memory</th>
+            <th>Memory %</th>
+          </tr>
+        </thead>
+        <tbody id="appsBody"></tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- Details drawer -->
+  <div class="backdrop" id="backdrop" hidden></div>
+  <aside class="drawer" id="appDetails" hidden aria-labelledby="detailsTitle">
+    <div class="section-head">
+      <h2 id="detailsTitle"></h2>
+      <div class="controls">
+        <button id="killAll" class="danger">Kill all</button>
+        <button id="closeDetails" aria-label="Close details">✕</button>
+      </div>
+    </div>
+
+    <div class="big-numbers small-numbers">
+      <div><strong id="dCount">--</strong><span>Processes</span></div>
+      <div><strong id="dCpu">--</strong><span>CPU</span></div>
+      <div><strong id="dMem">--</strong><span>Memory</span></div>
+      <div><strong id="dMemPct">--</strong><span>of RAM</span></div>
+    </div>
+
+    <h3>CPU % <span class="muted small">(last 60 s)</span></h3>
+    <div class="chart-box small"><canvas id="appCpuChart"></canvas></div>
+
+    <h3>Memory (MB) <span class="muted small">(last 60 s)</span></h3>
+    <div class="chart-box small"><canvas id="appMemChart"></canvas></div>
+
+    <h3>Processes</h3>
+    <table class="apps">
+      <thead>
+        <tr>
+          <th>PID</th>
+          <th>User</th>
+          <th>State</th>
+          <th>CPU %</th>
+          <th>Memory</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="detailsBody"></tbody>
+    </table>
+  </aside>
+
+  <!-- Storage browser drawer -->
+  <aside class="drawer" id="storageDrawer" hidden aria-labelledby="storageTitle">
+    <div class="section-head">
+      <h2 id="storageTitle">Storage</h2>
+      <div class="controls">
+        <button id="closeStorage" aria-label="Close storage">✕</button>
+      </div>
+    </div>
+    <nav class="crumbs" id="crumbs" aria-label="Folder path"></nav>
+    <p class="muted small" id="storageSummary"></p>
+    <ul class="bar-list file-list" id="storageList"></ul>
+  </aside>
+
+  <script src="../../node_modules/chart.js/dist/chart.umd.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>

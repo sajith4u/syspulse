@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3b8cf0"/>
+      <stop offset="1" stop-color="#5a3fd1"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="arc" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#4ade80"/>
+      <stop offset="0.55" stop-color="#facc15"/>
+      <stop offset="1" stop-color="#fb7185"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#1e1b4b" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Tile -->
+  <rect x="32" y="32" width="448" height="448" rx="104" fill="url(#bg)" filter="url(#shadow)"/>
+  <rect x="32" y="32" width="448" height="448" rx="104" fill="url(#shine)"/>
+
+  <!-- Gauge track (270°) and value arc -->
+  <path d="M149.93 386.07 A150 150 0 1 1 362.07 386.07" fill="none" stroke="#ffffff" stroke-opacity="0.22" stroke-width="34" stroke-linecap="round"/>
+  <path d="M149.93 386.07 A150 150 0 1 1 385.9 205" fill="none" stroke="url(#arc)" stroke-width="34" stroke-linecap="round"/>
+
+  <!-- Needle -->
+  <line x1="256" y1="280" x2="346.9" y2="227.5" stroke="#ffffff" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="256" cy="280" r="26" fill="#ffffff"/>
+  <circle cx="256" cy="280" r="10" fill="#4b5fe0"/>
+
+  <!-- Pulse line -->
+  <polyline points="186,362 222,362 238,334 260,392 280,346 294,362 326,362" fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
