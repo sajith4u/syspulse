@@ -94,6 +94,24 @@ The output goes to `dist/`:
 The first build downloads Electron and packaging tools (about 200 MB), so it takes a few minutes. Later builds are faster.
 Build on Linux, x64. Use the same `env -u ELECTRON_RUN_AS_NODE` prefix if you build from the VS Code terminal.
 
+### Building with Docker
+
+If you don't want to install Node.js and the packaging tools, build the packages inside a container.
+Only [Docker](https://docs.docker.com/engine/install/ubuntu/) 23 or newer is needed. On older versions, put `DOCKER_BUILDKIT=1` in front of the command.
+
+```bash
+git clone https://github.com/sajith4u/SysPulse.git
+cd SysPulse
+docker build --output dist .
+```
+
+This runs `npm ci` and `npm run dist` in a clean `node:22` container and copies the finished
+`.AppImage` and `.deb` into `dist/` on your machine. The first build takes a few minutes. Later builds
+reuse the cached dependency layer unless `package.json` or `package-lock.json` change.
+
+The container is only for **building**. Run the resulting AppImage or `.deb` on the host: inside a container,
+the app would show the container's processes and disks instead of your system's.
+
 **Releasing a new version:**
 
 1. Bump `version` in `package.json` (e.g. `npm version minor`).

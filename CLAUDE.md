@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm install` — install dependencies
 - `npm start` — launch the Electron app (`electron .`)
 
+- `docker build --output dist .` — same packages built in a container (`Dockerfile`: `npm ci` + `npm run dist`, then a `scratch` export stage)
 - `npm run dist` — package an AppImage + .deb into `dist/` with electron-builder (config in `package.json` → `build`; `dist:appimage` / `dist:deb` for one target)
 
 There is no build step for development, and no linter or test suite. Only `src/**`, `assets/icon.png` and runtime `dependencies` are packaged (the `build.files` list), so a new runtime file outside `src/` must be added there. `electron` must stay in `devDependencies`, or electron-builder refuses to build. The renderer loads Chart.js via a relative `node_modules` path, which works inside the asar too, so `chart.js` must stay a runtime dependency.
